@@ -1,27 +1,52 @@
-def add_task():
-    print("Add task")
+import time
+from datetime import datetime, timedelta
 
-def show_tasks():
-    print("Show tasks")
+class MedicationReminder:
+    def __init__(self):
+        self.schedule = []
+        self.medication_log = []
 
-def main():
-    while True:
-        print("\n=== To-Do List 管理系統 ===")
-        print("1. 顯示任務清單")
-        print("2. 新增任務")
-        print("3. 離開系統")
-        
-        choice = input("請選擇功能（輸入數字）：").strip()
-        
-        if choice == "1":
-            show_tasks()
-        elif choice == "2":
-            add_task()
-        elif choice == "3":
-            print("感謝使用，再見！")
-            break
+    def add_schedule(self, med_name, med_time):
+        self.schedule.append({'med_name': med_name, 'med_time': med_time})
+        print(f"已設置提醒: {med_name} 在 {med_time} 時服用")
+
+    def mark_as_taken(self, med_name, taken_time):
+        self.medication_log.append({'med_name': med_name, 'taken_time': taken_time})
+        print(f"已標記藥品 {med_name} 為已服用 ({taken_time})")
+
+    def check_reminders(self):
+        now = datetime.now().strftime("%H:%M")
+        for med in self.schedule:
+            if med['med_time'] == now:
+                print(f"提醒：該服用 {med['med_name']} 了！")
+
+    def show_medication_log(self):
+        if not self.medication_log:
+            print("尚未標記任何服藥記錄。")
         else:
-            print("無效的選擇，請重新輸入。\n")
+            print("已服藥記錄：")
+            for log in self.medication_log:
+                print(f"{log['med_name']} - 服藥時間: {log['taken_time']}")
 
-# 啟動主程式
-main()
+    def run(self):
+        while True:
+            self.check_reminders()
+            time.sleep(60)  
+
+
+if __name__ == "__main__":
+    reminder = MedicationReminder()
+
+    # 設定服藥時間
+    reminder.add_schedule("藥物A", "09:00")
+    reminder.add_schedule("藥物B", "12:00")
+    reminder.add_schedule("藥物C", "18:00")
+
+    # 示範標記服藥
+    reminder.mark_as_taken("藥物A", datetime.now().strftime("%Y-%m-%d %H:%M"))
+    
+    # 顯示已服藥記錄
+    reminder.show_medication_log()
+
+    # 開始運行提醒
+    reminder.run()
